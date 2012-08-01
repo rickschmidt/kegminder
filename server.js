@@ -4,6 +4,8 @@ var util=require('util');
 var fs=require('fs');
 
 //MongoDB via MongoJS
+//ENV Variable on heroku with url to mongodblab else reads the url from MONGODB (not on github)
+
 if (process.env.MONGODB_URL) {
   var mongostr=process.env.MONGODB_URL;
 }else{

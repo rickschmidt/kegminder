@@ -1,4 +1,5 @@
 /*
+    To be included on beaglebone. 
 	Example usage:
 	
 	var record=require('./record');
