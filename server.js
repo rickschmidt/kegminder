@@ -41,7 +41,9 @@ handler = function(req, res) {
     var resources;
     if(path[1]){resources = path[1];}
     //set id if if available
-    if(path[2]){id = path[2];}
+    if(path[2]){
+      id = path[2];
+    }else{id=null;  }
     
     console.log(path);
     console.log('Server running at http://' + ':' + port + '/');
@@ -83,7 +85,34 @@ handler = function(req, res) {
     }
     //Returns a json response of temperature data sorted by most recent first
     if(resources=='temperatures'){
-      var body='';      
+      if(id!=null){
+        if(id=='today'){
+           
+           var two_hours=1000*60*60*2; 
+           var now=new Date();
+//           var yesterday=new Date();
+           var yesterday=new Date();
+           yesterday.setDate(now.getDate()-1);
+           yesterday=yesterday.toJSON();
+
+           console.log('now'+now);
+           console.log('yesterday '+yesterday);
+           console.log('one day ago'+yesterday);
+          //db.temperatures.find({temperature:{$gt:40}}).sort({id:-1},function(err,temperatures){
+            db.temperatures.find(({"date":{$gt:yesterday}}),function(err,temperatures){
+            if(err|| !temperatures)console.log("No temperatures found");
+            else{
+              console.log('temps'+ temperatures);
+              body=JSON.stringify(temperatures);
+              res.writeHead(200,{
+                'Content-Type':'application/json'
+              });
+              res.end(body);
+            }
+          })
+        }
+      }else{
+        var body='';      
       db.temperatures.find().sort({date:-1},function(err, temperatures){
         if( err || !temperatures) console.log("No temperatures found");
         else{
@@ -93,7 +122,9 @@ handler = function(req, res) {
             });       
         res.end(body);
         }
-      });
+      });  
+      }
+      
     }
    
   }
