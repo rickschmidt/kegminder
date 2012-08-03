@@ -94,11 +94,7 @@ handler = function(req, res) {
            var yesterday=new Date();
            yesterday.setDate(now.getDate()-1);
            yesterday=yesterday.toJSON();
-
-           console.log('now'+now);
-           console.log('yesterday '+yesterday);
-           console.log('one day ago'+yesterday);
-          //db.temperatures.find({temperature:{$gt:40}}).sort({id:-1},function(err,temperatures){
+    
             db.temperatures.find(({"date":{$gt:yesterday}}),function(err,temperatures){
             if(err|| !temperatures)console.log("No temperatures found");
             else{
@@ -108,6 +104,29 @@ handler = function(req, res) {
                 'Content-Type':'application/json'
               });
               res.end(body);
+            }
+          })
+        }else if(id=='todayaverage'){
+          var now=new Date();
+          var yesterday=new Date();
+          yesterday.setDate(now.getDate()-1);
+          yesterday=yesterday.toJSON();
+
+          db.temperatures.find(({"date":{$gt:yesterday}}), function(err,temperatures){
+            if(err || !temperatures)console.log("No temperatures found");
+            else{
+              var average=0;
+              for (var i = 0; i < temperatures.length; i++) {
+                console.log(temperatures[i].temperature);
+                average=(parseInt(average)+parseInt(temperatures[i].temperature));                
+                console.log('average '+average);
+              };
+              average=average/(temperatures.length);
+              body=JSON.stringify(average);
+              res.writeHead(200,{
+                'Content-Type':'application/json'
+              });
+              res.end(body); 
             }
           })
         }
