@@ -10,3 +10,10 @@ To run the recorder on the device copy record.js into the current working direct
 					
 					var record=require('./record');
 					record.recordTemp(temperatureToRecord);
+
+
+Record a pour:
+/addPour?barId=3&kegId=4&lat=49&long=56&pour=5&temperature=66
+
+Record tap temp
+/addTemp?barId=3&kegId=4&lat=49&long=56&temperature=66

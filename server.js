@@ -39,12 +39,14 @@ handler = function(req, res) {
   if (req.method == 'GET') {
     path = url.pathname.split('/');
     var resources;
+    var query = URL.parse(req.url,true).query;
     if(path[1]){resources = path[1];}
     //set id if if available
     if(path[2]){
       id = path[2];
     }else{id=null;  }
-    
+    console.log(query['barId']);
+    console.log('res'+resources);
     console.log(path);
     console.log('Server running at http://' + ':' + port + '/');
     if(resources==null){
@@ -83,6 +85,44 @@ handler = function(req, res) {
       });
       res.end(JSON.stringify(body));
     }
+    if(resources=='addPour'){
+     
+      
+      var now=new Date();
+      db.temperatures.save({        
+        'barId':query['barId'],
+        'kegId':query['kegId'],
+        'lat':query['lat'],
+        'long':query['long'],
+        'pour':query['pour'],
+        'temperature':query['temperature'],
+        'date':now.toJSON(),
+        'type':'pour'
+      });
+      var body ={'Pour added':query['pour']};
+      res.writeHead(200,{
+        'Content-Type':'application/json'
+      })
+      res.end(JSON.stringify(body));
+
+    }
+    if(resources=='addTemp'){
+      var now=new Date();
+      db.temperatures.save({        
+        'barId':query['barId'],
+        'kegId':query['kegId'],
+        'lat':query['lat'],
+        'long':query['long'],
+        'temperature':query['temperature'],        
+        'date':now.toJSON(),
+        'type':'tap'
+      });
+      var body ={'Tap added':query['temperature']};
+      res.writeHead(200,{
+        'Content-Type':'application/json'
+      })
+      res.end(JSON.stringify(body));
+    }
     //Returns a json response of temperature data sorted by most recent first
     if(resources=='temperatures'){
       if(id!=null){
@@ -90,7 +130,6 @@ handler = function(req, res) {
            
            var two_hours=1000*60*60*2; 
            var now=new Date();
-//           var yesterday=new Date();
            var yesterday=new Date();
            yesterday.setDate(now.getDate()-1);
            yesterday=yesterday.toJSON();
