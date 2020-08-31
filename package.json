@@ -4,7 +4,7 @@
   "dependencies": {
   	"express": "2.5.x",
   	"mongodb": ">= 0.9.6-7",
-	"connect": "1.8.5",
+	"connect": "3.7.0",
   "mongojs":">=0"
   },
   "engines": {
